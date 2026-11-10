@@ -332,6 +332,11 @@ lignes_ap = [
     ("Contrôle TVA", "Vérifie que Total HTVA + TVA = Total TVAC (à 2 centimes près). Un écart signale une erreur de "
      "lecture ou une facture mal calculée."),
     ("Tableau de bord", "Totaux, retards et montants par mois, mis à jour seuls à chaque nouvelle ligne."),
+    ("Dates et statuts", "Les statuts et les jours restants dépendent de la date du jour. Les documents d'exemple datent "
+     "d'octobre 2026 : avec le temps, ils passent normalement en « En retard » ou « Expiré »."),
+    ("Données nettoyées", "Seuls les factures et les devis sont ajoutés. Avant l'écriture, n8n retire les caractères qui "
+     "feraient d'un texte une formule Excel (= + - @), raccourcit les textes et remplace le nom du fichier par "
+     "« Document déposé », sauf pour les exemples."),
     ("Documents fictifs", "Toutes les entreprises, personnes et numéros de TVA sont inventés. N'envoyez jamais de vrais "
      "documents sur la démo."),
 ]
