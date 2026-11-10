@@ -1,6 +1,12 @@
-# Caddy obtient et renouvelle seul le certificat HTTPS pour le domaine,
-# puis transmet toutes les demandes à n8n (port 5678, réseau interne Docker).
+# Caddy obtient et renouvelle seul le certificat HTTPS pour le domaine.
+# Seule l adresse du webhook de la démo est transmise à n8n. Tout le reste (éditeur, API)
+# répond 404 : l éditeur n8n s ouvre par un tunnel SSH (voir README du dossier deploiement).
 {$DOMAINE} {
 	encode gzip
-	reverse_proxy n8n:5678
+	handle /webhook/saisie-zero {
+		reverse_proxy n8n:5678
+	}
+	handle {
+		respond 404
+	}
 }
