@@ -97,13 +97,13 @@
         <h2 id="titre-depot">Essayer avec un document</h2>
 
         <label class="zone-depot" id="zone-depot" for="champ-fichier" data-etat="attente">
-          <input type="file" id="champ-fichier" accept="application/pdf,.pdf" hidden>
+          <input type="file" id="champ-fichier" class="visuellement-cache" accept="application/pdf,.pdf">
           <span class="zone-depot__icone" id="zone-icone" aria-hidden="true"></span>
           <span class="zone-depot__titre" id="zone-titre" aria-live="polite">Glissez votre PDF ici</span>
           <span class="zone-depot__aide" id="zone-aide">ou <span class="lien">cliquez pour choisir un fichier</span>. PDF uniquement, 5 Mo maximum.</span>
         </label>
 
-        <p class="avertissement">Démo publique : n'envoyez que des documents fictifs. Les fichiers sont lus par Gemini, l'IA de Google, en version gratuite.</p>
+        <p class="avertissement">Démo publique : n'envoyez que des documents fictifs. Le texte du PDF est extrait par n8n, puis envoyé à Gemini, l'IA de Google, en version gratuite.</p>
       </div>
 
       <div class="depot__droite">
@@ -129,8 +129,8 @@
           <svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5V20"/></svg>
         </span>
         <div class="confirmation-excel__texte">
-          <p class="confirmation-excel__titre">Ligne envoyée dans Excel</p>
-          <p class="confirmation-excel__aide">Elle arrive dans le classeur public en quelques secondes. S'il est déjà ouvert, actualisez-le.</p>
+          <p class="confirmation-excel__titre" id="confirmation-titre">Ligne ajoutée dans Excel</p>
+          <p class="confirmation-excel__aide" id="confirmation-aide">Elle est visible dans le classeur public. S'il est déjà ouvert, actualisez-le.</p>
         </div>
         <a class="confirmation-excel__bouton" id="lien-tableur-a" href="#" target="_blank" rel="noopener">
           Ouvrir le classeur
@@ -170,7 +170,8 @@
   </main>
 
   <footer class="pied">
-    Projet de démonstration construit avec n8n, Gemini et Excel 365 (Microsoft Azure). Tous les documents sont fictifs.
+    <p>Projet de démonstration réalisé par <strong>Nicolas Carminati</strong> avec n8n, Gemini et Excel 365 (relié via Microsoft Entra ID). Tous les documents sont fictifs.</p>
+    <p><a href="https://github.com/Nico21350/saisie-zero" target="_blank" rel="noopener">Code source sur GitHub</a></p>
   </footer>
 
   <div class="voile-depot" id="voile-depot" aria-hidden="true">

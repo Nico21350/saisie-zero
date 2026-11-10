@@ -1,7 +1,9 @@
 const config = window.SAISIE_ZERO_CONFIG;
 
 const TAILLE_MAX = 5 * 1024 * 1024; // 5 Mo
-const DELAI_MAX = 120 * 1000; // Gemini peut mettre jusqu'à une minute quand il est saturé
+// 4 minutes : la version gratuite de Gemini répond en général en 10 à 30 s, mais peut mettre jusqu'à 3 minutes
+// quand elle est saturée (mesuré le 2026-11-10 : 187 s pour un document).
+const DELAI_MAX = 240 * 1000;
 
 const EXEMPLES = [
   { fichier: "facture-1-pixelvent.pdf", nom: "Pixelvent SRL", type: "facture", numero: "Facture F-2026-0147" },
@@ -103,7 +105,9 @@ function afficherChargement(nomFichier) {
     elements.forEach((li, i) => {
       li.className = i < enCours ? "fait" : i === enCours ? "en-cours" : "";
     });
-    compteur.textContent = `${secondes} s écoulées, en général 15 à 60 secondes.`;
+    compteur.textContent = secondes < 45
+      ? `${secondes} s écoulées, en général 10 à 30 secondes.`
+      : `${secondes} s écoulées. L'IA gratuite est lente en ce moment, cela peut prendre jusqu'à 3 minutes.`;
   };
   majAide();
   arreterCompteur();
@@ -144,7 +148,7 @@ function remplirPartie(prefixe, partie) {
     partie && partie.numero_tva ? `TVA ${partie.numero_tva}` : "Pas de numéro de TVA";
 }
 
-function afficherResultat(doc) {
+function afficherResultat(doc, excel) {
   const badge = document.getElementById("resultat-type");
   const libellesType = { facture: "Facture reconnue", devis: "Devis reconnu" };
   badge.textContent = libellesType[doc.type_document] || "Document non reconnu";
@@ -194,10 +198,23 @@ function afficherResultat(doc) {
   ajouterLigneDefinition(totaux, "TVA", formaterMontant(doc.montant_tva));
   ajouterLigneDefinition(totaux, "Total TVAC", formaterMontant(doc.total_tvac), "total-final");
 
+  // n8n répond après l'écriture dans Excel et indique le résultat :
+  // "ajoute" (ligne écrite), "echec" (classeur indisponible), "ignore" (document non reconnu, rien d'écrit).
   const lienTableur = document.getElementById("lien-tableur");
-  if (config.sheetUrl) {
+  const MESSAGES_EXCEL = {
+    ajoute: ["Ligne ajoutée dans Excel", "Elle est visible dans le classeur public. S'il est déjà ouvert, actualisez-le."],
+    echec: ["Classeur Excel indisponible", "L'analyse a réussi, mais la ligne n'a pas pu être ajoutée au classeur. Réessayez plus tard."],
+    ignore: ["Rien d'ajouté dans Excel", "Ce document n'est ni une facture ni un devis : il n'est pas rangé dans le classeur."],
+  };
+  const message = MESSAGES_EXCEL[excel];
+  if (config.sheetUrl && message) {
     document.getElementById("lien-tableur-a").href = config.sheetUrl;
+    document.getElementById("confirmation-titre").textContent = message[0];
+    document.getElementById("confirmation-aide").textContent = message[1];
+    lienTableur.dataset.etat = excel;
     lienTableur.hidden = false;
+  } else {
+    lienTableur.hidden = true;
   }
 
   blocResultat.hidden = false;
@@ -287,7 +304,7 @@ async function analyser(fichier) {
     if (!reponse.ok) throw new Error(`HTTP ${reponse.status}`);
     if (!corps || !corps.output) throw new Error("Réponse sans champ output");
     afficherTermine(fichier.name);
-    afficherResultat(corps.output);
+    afficherResultat(corps.output, corps.excel);
   } catch (erreur) {
     console.error("Échec de l'analyse :", erreur);
     if (erreur.name === "AbortError") {

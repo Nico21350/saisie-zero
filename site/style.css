@@ -437,6 +437,9 @@ main {
   background: var(--accent-doux);
   transition: border-color 0.2s, background 0.2s, transform 0.2s;
 }
+/* Navigation au clavier : le champ fichier, caché visuellement, reçoit le focus ; la zone s'entoure d'un contour */
+.zone-depot:focus-within { outline: 3px solid var(--accent); outline-offset: 3px; }
+.zone-depot:focus-within:not(:has(:focus-visible)) { outline: none; }
 .zone-depot:hover,
 .zone-depot.survol {
   border-color: var(--accent);
@@ -657,6 +660,11 @@ button:disabled { opacity: 0.45; cursor: not-allowed; filter: none; }
 .confirmation-excel__texte { flex: 1; min-width: 0; }
 .confirmation-excel__texte p { margin: 0; }
 .confirmation-excel__titre { font-weight: 700; }
+/* Excel indisponible : orange ; document non reconnu : gris */
+.confirmation-excel[data-etat="echec"] { border-color: color-mix(in srgb, var(--erreur) 45%, transparent); background: linear-gradient(100deg, var(--erreur-doux), transparent 70%); }
+.confirmation-excel[data-etat="echec"] .confirmation-excel__icone { background: var(--erreur-doux); color: var(--erreur); }
+.confirmation-excel[data-etat="ignore"] { border-color: var(--bordure); background: var(--accent-doux); }
+.confirmation-excel[data-etat="ignore"] .confirmation-excel__icone { background: var(--bordure); color: var(--discret); }
 .confirmation-excel__aide { color: var(--discret); font-size: 0.86rem; }
 .confirmation-excel__bouton {
   flex-shrink: 0;
@@ -789,6 +797,9 @@ tbody tr + tr td { border-top: 1px solid var(--bordure); }
   color: var(--discret);
   font-size: 0.82rem;
 }
+.pied p { margin: 4px 0; }
+.pied strong { color: var(--texte); font-weight: 600; }
+.pied a { font-weight: 600; text-underline-offset: 3px; }
 
 /* Voile affiché quand on glisse un fichier au-dessus de la page */
 .voile-depot {
