@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saisie Zéro</title>
+  <meta name="description" content="Démo : l'IA lit une facture ou un devis en PDF, en extrait les informations et les range dans un tableur Excel.">
+  <meta property="og:title" content="Saisie Zéro : vos factures et devis, saisis tout seuls">
+  <meta property="og:description" content="Démo d'automatisation pour PME : déposez un PDF, l'IA en extrait les informations et ajoute une ligne dans un tableur Excel.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://saisie-zero.vercel.app/">
+  <meta name="theme-color" content="#0b0d17">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%235b5bf0'/%3E%3Cstop offset='1' stop-color='%2314b8a6'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='41' font-family='Arial,sans-serif' font-size='26' font-weight='700' fill='%23fff' text-anchor='middle'%3ESZ%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="halo" aria-hidden="true"></div>
+
+  <header class="barre">
+    <div class="marque">
+      <span class="marque__logo" aria-hidden="true">SZ</span>
+      <span class="marque__nom">Saisie Zéro</span>
+    </div>
+    <span class="pastille">Démo</span>
+  </header>
+
+  <main>
+    <section class="hero">
+      <p class="surtitre">Automatisation de documents pour PME</p>
+      <h1>Vos factures et devis, <span class="degrade">saisis tout seuls.</span></h1>
+      <p class="chapo">Déposez un PDF. L'IA reconnaît le type de document, en extrait les informations utiles et les range dans un tableur. Aucune saisie à la main.</p>
+
+      <p class="tableur-direct" id="tableur-direct" hidden>
+        <a class="bouton-tableur" id="tableur-direct-a" href="#" target="_blank" rel="noopener"
+           title="Ouvrez le classeur, analysez un document, puis actualisez-le : la nouvelle ligne apparaît en bas du tableau.">
+          <span class="bouton-tableur__direct"><i></i>En direct</span>
+          <svg class="bouton-tableur__icone" viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5V20"/></svg>
+          Voir le tableur Excel
+          <svg class="bouton-tableur__fleche" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16 16 8M9.5 8H16v6.5"/></svg>
+        </a>
+      </p>
+
+      <!-- Animation qui raconte le traitement : PDF, lecture par l'IA, ligne dans Excel (décorative) -->
+      <p class="visuellement-cache">Fonctionnement : 1. vous déposez un PDF, 2. l'IA le lit et en extrait les informations, 3. une ligne est ajoutée dans le tableur Excel.</p>
+      <div class="scene" aria-hidden="true">
+        <div class="scene__etape">
+          <div class="scene__carte scene__pdf">
+            <div class="pdf__entete"><span class="pdf__logo"></span><span class="pdf__titre">FACTURE</span></div>
+            <span class="pdf__barre pdf__barre--moyenne"></span>
+            <span class="pdf__barre pdf__barre--courte"></span>
+            <span class="pdf__barre"></span>
+            <span class="pdf__barre"></span>
+            <span class="pdf__barre pdf__barre--moyenne"></span>
+            <div class="pdf__total"><span>Total TVAC</span><b>3 817,55 €</b></div>
+            <span class="pdf__scan"></span>
+          </div>
+          <p class="scene__legende"><span>1</span>PDF déposé</p>
+        </div>
+
+        <div class="scene__fleche scene__fleche--1"><span></span></div>
+
+        <div class="scene__etape">
+          <div class="scene__carte scene__ia">
+            <div class="ia__tete"><span class="ia__puce">✦</span>Gemini lit le document</div>
+            <div class="ia__champ ia__champ--1"><small>Fournisseur</small><b>Pixelvent SRL</b></div>
+            <div class="ia__champ ia__champ--2"><small>Numéro</small><b>F-2026-0147</b></div>
+            <div class="ia__champ ia__champ--3"><small>Total TVAC</small><b>3 817,55 €</b></div>
+          </div>
+          <p class="scene__legende"><span>2</span>Lu par l'IA</p>
+        </div>
+
+        <div class="scene__fleche scene__fleche--2"><span></span></div>
+
+        <div class="scene__etape">
+          <div class="scene__carte scene__excel">
+            <div class="xl__tete">
+              <svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5V20"/></svg>
+              saisie-zero-documents.xlsx
+            </div>
+            <div class="xl__grille">
+              <span class="xl__th">Type</span><span class="xl__th">Émetteur</span><span class="xl__th">TVAC</span>
+              <span>devis</span><span>Delvaux &amp; Fils</span><span>2 561,49 €</span>
+              <span>facture</span><span>Encres Vives</span><span>634,09 €</span>
+              <span class="xl__nouvelle">facture</span><span class="xl__nouvelle">Pixelvent SRL</span><span class="xl__nouvelle">3 817,55 €</span>
+            </div>
+          </div>
+          <p class="scene__legende"><span>3</span>Ligne dans Excel</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="carte depot" aria-labelledby="titre-depot">
+      <div class="depot__gauche">
+        <h2 id="titre-depot">Essayer avec un document</h2>
+
+        <label class="zone-depot" id="zone-depot" for="champ-fichier" data-etat="attente">
+          <input type="file" id="champ-fichier" accept="application/pdf,.pdf" hidden>
+          <span class="zone-depot__icone" id="zone-icone" aria-hidden="true"></span>
+          <span class="zone-depot__titre" id="zone-titre" aria-live="polite">Glissez votre PDF ici</span>
+          <span class="zone-depot__aide" id="zone-aide">ou <span class="lien">cliquez pour choisir un fichier</span>. PDF uniquement, 5 Mo maximum.</span>
+        </label>
+
+        <p class="avertissement">Démo publique : n'envoyez que des documents fictifs. Les fichiers sont lus par Gemini, l'IA de Google, en version gratuite.</p>
+      </div>
+
+      <div class="depot__droite">
+        <div class="separateur"><span>ou prenez un document d'exemple</span></div>
+        <ul class="exemples" id="liste-exemples"></ul>
+      </div>
+    </section>
+
+
+    <section class="carte resultat" id="resultat" aria-labelledby="titre-resultat" hidden>
+      <div class="resultat__entete">
+        <div>
+          <p class="badge" id="resultat-type"></p>
+          <h2 id="titre-resultat" class="resultat__numero">
+            <span id="resultat-numero"></span>
+          </h2>
+        </div>
+        <dl class="meta" id="resultat-meta"></dl>
+      </div>
+
+      <div class="confirmation-excel" id="lien-tableur" hidden>
+        <span class="confirmation-excel__icone" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="2.5"/><path d="M3.5 9.5h17M3.5 14.5h17M9.5 9.5V20"/></svg>
+        </span>
+        <div class="confirmation-excel__texte">
+          <p class="confirmation-excel__titre">Ligne envoyée dans Excel</p>
+          <p class="confirmation-excel__aide">Elle arrive dans le classeur public en quelques secondes. S'il est déjà ouvert, actualisez-le.</p>
+        </div>
+        <a class="confirmation-excel__bouton" id="lien-tableur-a" href="#" target="_blank" rel="noopener">
+          Ouvrir le classeur
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 16 16 8M9.5 8H16v6.5"/></svg>
+        </a>
+      </div>
+
+      <div class="parties">
+        <div class="partie">
+          <p class="partie__role">Émetteur</p>
+          <p class="partie__nom" id="resultat-emetteur-nom"></p>
+          <p class="partie__tva" id="resultat-emetteur-tva"></p>
+        </div>
+        <div class="partie">
+          <p class="partie__role">Client</p>
+          <p class="partie__nom" id="resultat-client-nom"></p>
+          <p class="partie__tva" id="resultat-client-tva"></p>
+        </div>
+      </div>
+
+      <div class="tableau-defilant">
+        <table>
+          <thead>
+            <tr>
+              <th scope="col">Désignation</th>
+              <th scope="col" class="nombre">Qté</th>
+              <th scope="col" class="nombre"><span class="libelle-long">Prix unitaire HTVA</span><span class="libelle-court">P.U. HTVA</span></th>
+              <th scope="col" class="nombre">TVA</th>
+            </tr>
+          </thead>
+          <tbody id="resultat-lignes"></tbody>
+        </table>
+      </div>
+
+      <dl class="totaux" id="resultat-totaux"></dl>
+    </section>
+  </main>
+
+  <footer class="pied">
+    Projet de démonstration construit avec n8n, Gemini et Excel 365 (Microsoft Azure). Tous les documents sont fictifs.
+  </footer>
+
+  <div class="voile-depot" id="voile-depot" aria-hidden="true">
+    <div class="voile-depot__cadre">Lâchez le PDF pour l'analyser</div>
+  </div>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

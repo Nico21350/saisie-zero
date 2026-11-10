@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Facture F-2026-0147, Pixelvent SRL</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Segoe UI", Arial, sans-serif; font-size: 10pt; color: #1f2933; }
+  .page { width: 210mm; min-height: 297mm; padding: 18mm 18mm 14mm; position: relative; }
+  header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 3px solid #2563eb; padding-bottom: 8mm; }
+  .logo { font-size: 20pt; font-weight: 700; color: #2563eb; letter-spacing: -0.5px; }
+  .logo span { color: #1f2933; }
+  .emetteur { margin-top: 2mm; line-height: 1.5; color: #52606d; }
+  .titre { text-align: right; }
+  .titre h1 { margin: 0; font-size: 26pt; letter-spacing: 2px; color: #1f2933; }
+  .titre table { margin-left: auto; margin-top: 3mm; border-collapse: collapse; }
+  .titre td { padding: 1mm 0 1mm 6mm; }
+  .titre td:first-child { color: #52606d; }
+  .titre td:last-child { font-weight: 600; text-align: right; }
+  .client { margin: 10mm 0 8mm auto; width: 85mm; background: #eff4ff; padding: 5mm 6mm; border-radius: 2mm; line-height: 1.5; }
+  .client .label { font-size: 8pt; text-transform: uppercase; letter-spacing: 1px; color: #2563eb; font-weight: 700; }
+  table.lignes { width: 100%; border-collapse: collapse; }
+  table.lignes th { background: #2563eb; color: #fff; font-weight: 600; padding: 2.5mm 3mm; text-align: left; }
+  table.lignes td { padding: 3mm; border-bottom: 1px solid #e4e7eb; }
+  table.lignes .n { text-align: right; white-space: nowrap; }
+  .totaux { margin: 6mm 0 0 auto; width: 80mm; border-collapse: collapse; }
+  .totaux td { padding: 2mm 3mm; }
+  .totaux td:last-child { text-align: right; }
+  .totaux .final td { background: #1f2933; color: #fff; font-weight: 700; font-size: 12pt; }
+  .paiement { margin-top: 12mm; line-height: 1.6; border-left: 3px solid #2563eb; padding-left: 5mm; }
+  footer { position: absolute; bottom: 12mm; left: 18mm; right: 18mm; text-align: center; font-size: 7.5pt; color: #9aa5b1; border-top: 1px solid #e4e7eb; padding-top: 3mm; }
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <div>
+      <div class="logo">Pixel<span>vent</span></div>
+      <div class="emetteur">
+        Pixelvent SRL<br>
+        Rue des Tanneurs Verts 14<br>
+        4000 Liège<br>
+        TVA : BE 0712.345.631<br>
+        facturation@pixelvent.example
+      </div>
+    </div>
+    <div class="titre">
+      <h1>FACTURE</h1>
+      <table>
+        <tr><td>Facture n°</td><td>F-2026-0147</td></tr>
+        <tr><td>Date de facture</td><td>15/10/2026</td></tr>
+        <tr><td>Échéance</td><td>14/11/2026</td></tr>
+      </table>
+    </div>
+  </header>
+
+  <div class="client">
+    <div class="label">Facturé à</div>
+    <strong>Boulangerie Lemaire SRL</strong><br>
+    Place du Fournil 3<br>
+    5000 Namur<br>
+    TVA : BE 0659.812.708
+  </div>
+
+  <table class="lignes">
+    <thead>
+      <tr><th>Description</th><th class="n">Qté</th><th class="n">Prix unitaire HTVA</th><th class="n">TVA</th><th class="n">Total HTVA</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Refonte du site vitrine (forfait)</td><td class="n">1</td><td class="n">2 400,00 €</td><td class="n">21 %</td><td class="n">2 400,00 €</td></tr>
+      <tr><td>Hébergement annuel</td><td class="n">1</td><td class="n">180,00 €</td><td class="n">21 %</td><td class="n">180,00 €</td></tr>
+      <tr><td>Séance photos produits (demi-journée)</td><td class="n">1</td><td class="n">350,00 €</td><td class="n">21 %</td><td class="n">350,00 €</td></tr>
+      <tr><td>Formation à la gestion du site (heures)</td><td class="n">3</td><td class="n">75,00 €</td><td class="n">21 %</td><td class="n">225,00 €</td></tr>
+    </tbody>
+  </table>
+
+  <table class="totaux">
+    <tr><td>Total HTVA</td><td>3 155,00 €</td></tr>
+    <tr><td>TVA 21 %</td><td>662,55 €</td></tr>
+    <tr class="final"><td>Total TVAC</td><td>3 817,55 €</td></tr>
+  </table>
+
+  <div class="paiement">
+    Merci de verser le montant de <strong>3 817,55 €</strong> avant le <strong>14/11/2026</strong><br>
+    sur le compte <strong>BE22 0682 1435 7903</strong><br>
+    avec la communication structurée <strong>+++026/1014/70120+++</strong>
+  </div>
+
+  <footer>Document fictif : démo Saisie Zéro. Entreprises, numéros de TVA et coordonnées bancaires inventés.</footer>
+</div>
+</body>
+</html>

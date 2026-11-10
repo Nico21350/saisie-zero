@@ -1,0 +1,693 @@
+{
+  "name": "Saisie Zéro",
+  "nodes": [
+    {
+      "name": "Extract from File",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1.1,
+      "position": [
+        -1440,
+        -160
+      ],
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "Document",
+        "options": {}
+      },
+      "onError": "continueErrorOutput"
+    },
+    {
+      "name": "Basic LLM Chain",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1.9,
+      "position": [
+        -960,
+        -176
+      ],
+      "parameters": {
+        "promptType": "define",
+        "text": "=Tu reçois le texte brut extrait d'un document PDF d'une entreprise belge.\n\n1. Détermine s'il s'agit d'une facture ou d'un devis. Si ce n'est ni l'un ni l'autre, mets type_document à \"autre\", mets null dans les autres champs et une liste vide dans lignes.\n2. Extrais les informations du document. N'invente rien : si une information est absente, mets null.\n\nRègles de format :\n- Dates au format AAAA-MM-JJ.\n- Montants en nombres, avec un point comme séparateur décimal et sans symbole (exemple : 2400.00 pour 2 400,00 €).\n- Taux de TVA en nombre (21 pour 21 %).\n- L'émetteur est l'entreprise qui a rédigé le document (le fournisseur pour une facture).\n\nTexte du document :\n{{ $json.text }}\n",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "batching": {}
+      },
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -992,
+        160
+      ],
+      "parameters": {
+        "options": {
+          "temperature": 0
+        }
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "name": "Structured Output Parser",
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        -656,
+        160
+      ],
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"type_document\": { \"type\": \"string\", \"enum\": [\"facture\", \"devis\", \"autre\"] },\n    \"emetteur\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"nom\": { \"type\": [\"string\", \"null\"] },\n        \"numero_tva\": { \"type\": [\"string\", \"null\"] }\n      },\n      \"required\": [\"nom\", \"numero_tva\"]\n    },\n    \"client\": {\n      \"type\": \"object\",\n      \"properties\": {\n        \"nom\": { \"type\": [\"string\", \"null\"] },\n        \"numero_tva\": { \"type\": [\"string\", \"null\"] }\n      },\n      \"required\": [\"nom\", \"numero_tva\"]\n    },\n    \"numero\": { \"type\": [\"string\", \"null\"] },\n    \"date\": { \"type\": [\"string\", \"null\"], \"description\": \"AAAA-MM-JJ\" },\n    \"date_echeance\": { \"type\": [\"string\", \"null\"], \"description\": \"Facture uniquement, AAAA-MM-JJ\" },\n    \"date_validite\": { \"type\": [\"string\", \"null\"], \"description\": \"Devis uniquement, AAAA-MM-JJ\" },\n    \"lignes\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"object\",\n        \"properties\": {\n          \"designation\": { \"type\": \"string\" },\n          \"quantite\": { \"type\": [\"number\", \"null\"] },\n          \"prix_unitaire_htva\": { \"type\": [\"number\", \"null\"] },\n          \"taux_tva\": { \"type\": [\"number\", \"null\"] }\n        },\n        \"required\": [\"designation\", \"quantite\", \"prix_unitaire_htva\", \"taux_tva\"]\n      }\n    },\n    \"total_htva\": { \"type\": [\"number\", \"null\"] },\n    \"montant_tva\": { \"type\": [\"number\", \"null\"] },\n    \"total_tvac\": { \"type\": [\"number\", \"null\"] }\n  },\n  \"required\": [\"type_document\", \"emetteur\", \"client\", \"numero\", \"date\", \"date_echeance\", \"date_validite\", \"lignes\", \"total_htva\", \"montant_tva\", \"total_tvac\"]\n}\n"
+      }
+    },
+    {
+      "name": "Append row in sheet",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -448,
+        -16
+      ],
+      "parameters": {
+        "authentication": "serviceAccount",
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "ID_DE_VOTRE_GOOGLE_SHEETS"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Feuille 1"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Traité le": "={{ $now.setZone('Europe/Brussels').toFormat('yyyy-MM-dd HH:mm') }}",
+            "Fichier": "={{ $('Webhook').item.binary.Document.fileName }}",
+            "Type": "={{ $json.output.type_document }}",
+            "Émetteur": "={{ $json.output.emetteur.nom }}",
+            "TVA émetteur": "={{ $json.output.emetteur.numero_tva }}",
+            "Client": "={{ $json.output.client.nom }}",
+            "TVA client": "={{ $json.output.client.numero_tva }}",
+            "Numéro": "={{ $json.output.numero }}",
+            "Date": "={{ $json.output.date }}",
+            "Échéance": "={{ $json.output.date_echeance }}",
+            "Validité": "={{ $json.output.date_validite }}",
+            "Nb lignes": "={{ $json.output.lignes.length }}",
+            "Lignes": "={{ $json.output.lignes.map(l => l.quantite + ' x ' + l.designation + ' à ' + l.prix_unitaire_htva + ' € (TVA ' + l.taux_tva + ' %)').join(' / ') }}",
+            "Total HTVA": "={{ $json.output.total_htva }}",
+            "TVA": "={{ $json.output.montant_tva }}",
+            "Total TVAC": "={{ $json.output.total_tvac }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "displayName": "Traité le",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "Fichier",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "Émetteur",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "TVA émetteur",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "Client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "TVA client",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "Numéro",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "Date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "Échéance",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "Validité",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "Nb lignes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "Lignes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "Total HTVA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "TVA",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "displayName": "Total TVAC",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "disabled": true,
+      "credentials": {
+        "googleApi": {
+          "name": "Google Service Account account"
+        }
+      }
+    },
+    {
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2032,
+        176
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "saisie-zero",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://votre-page.vercel.app"
+        }
+      }
+    },
+    {
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -448,
+        -192
+      ],
+      "parameters": {
+        "options": {}
+      }
+    },
+    {
+      "name": "Google Gemini Chat Model1",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        -816,
+        160
+      ],
+      "parameters": {
+        "modelName": "models/gemini-3.8-flash",
+        "options": {
+          "temperature": 0
+        }
+      },
+      "credentials": {
+        "googlePalmApi": {
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "name": "Erreur lecture PDF",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -1440,
+        16
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"erreur\": \"Ce PDF n'a pas pu être lu. Il est peut-être endommagé ou protégé par un mot de passe.\" }\n",
+        "options": {
+          "responseCode": 422
+        }
+      }
+    },
+    {
+      "name": "Erreur IA",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -448,
+        176
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"erreur\": \"Le service d'IA est saturé ou indisponible pour le moment. Réessayez dans une minute.\" }\n",
+        "options": {
+          "responseCode": 503
+        }
+      }
+    },
+    {
+      "name": "vérifier la demande",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1840,
+        176
+      ],
+      "parameters": {
+        "jsCode": "// Code du bloc n8n « Vérifier la demande » (Code in JavaScript, Run Once for All Items),\n// placé entre le Webhook et Extract from File. Étape 6, partie 3.\n\n// Vérifie la demande avant l'analyse : fichier présent, vrai PDF, taille,\n// et nombre d'analyses (pour protéger le quota gratuit de Gemini).\nconst LIMITE_PAR_HEURE = 10; // par visiteur\nconst LIMITE_PAR_JOUR = 100; // pour toute la démo\nconst TAILLE_MAX = 5 * 1024 * 1024; // 5 Mo\n\nconst item = $input.first();\nconst fichier = item.binary?.Document;\n\nfunction refuser(message) {\n  return [{ json: { valide: false, erreur: message } }];\n}\n\nif (!fichier) return refuser(\"Aucun fichier reçu. Choisissez un PDF.\");\n\nconst contenu = await this.helpers.getBinaryDataBuffer(0, 'Document');\nif (contenu.length > TAILLE_MAX) return refuser(\"Ce fichier dépasse 5 Mo.\");\n// Tous les vrais PDF commencent par les caractères \"%PDF\"\nif (contenu.subarray(0, 4).toString() !== '%PDF') return refuser(\"Ce fichier n'est pas un vrai PDF.\");\n\n// Compteurs gardés par n8n d'une exécution à l'autre (seulement quand le workflow est publié).\n// Ils repartent à zéro chaque heure et chaque jour.\nconst memoire = $getWorkflowStaticData('global');\nconst heure = Math.floor(Date.now() / 3600000);\nconst jour = new Date().toISOString().slice(0, 10);\nconst visiteur = (item.json.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'local';\n\nif (memoire.heure !== heure) { memoire.heure = heure; memoire.parVisiteur = {}; }\nif (memoire.jour !== jour) { memoire.jour = jour; memoire.total = 0; }\n\nconst dejaFaites = memoire.parVisiteur[visiteur] || 0;\nif (dejaFaites >= LIMITE_PAR_HEURE) return refuser(`Vous avez atteint la limite de ${LIMITE_PAR_HEURE} analyses par heure. Réessayez plus tard.`);\nif (memoire.total >= LIMITE_PAR_JOUR) return refuser(\"La démo a atteint sa limite d'analyses pour aujourd'hui. Revenez demain.\");\n\nmemoire.parVisiteur[visiteur] = dejaFaites + 1;\nmemoire.total += 1;\n\nreturn [{ json: { ...item.json, valide: true }, binary: item.binary }];\n"
+      }
+    },
+    {
+      "name": "Demande valide?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1632,
+        176
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ $json.valide }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "name": "Refuser la demande",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -1280,
+        336
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ erreur: $json.erreur }) }}\n",
+        "options": {
+          "responseCode": 400
+        }
+      }
+    },
+    {
+      "name": "Texte trouvé ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -1200,
+        -176
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ ($json.text || '').trim().length }}",
+              "rightValue": 20,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "name": "PDF sans texte",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -1200,
+        16
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"erreur\": \"Ce PDF ne contient pas de texte lisible. C'est sans doute un document scanné : la démo lit seulement les PDF créés par un logiciel.\" }",
+        "options": {
+          "responseCode": 422
+        }
+      }
+    },
+    {
+      "name": "Ajouter dans Excel",
+      "type": "n8n-nodes-base.microsoftExcel",
+      "typeVersion": 2.2,
+      "position": [
+        -976,
+        464
+      ],
+      "parameters": {
+        "resource": "table",
+        "workbook": {
+          "__rl": true,
+          "mode": "list",
+          "value": "ID_DE_VOTRE_CLASSEUR_ONEDRIVE",
+          "cachedResultName": "saisie-zero-documents"
+        },
+        "worksheet": {
+          "__rl": true,
+          "mode": "list",
+          "value": "{00000000-0001-0000-0100-000000000000}",
+          "cachedResultName": "Documents"
+        },
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": "{00000000-000C-0000-FFFF-FFFF00000000}",
+          "cachedResultName": "Documents"
+        },
+        "fieldsUi": {
+          "values": [
+            {
+              "column": "Traité le",
+              "fieldValue": "={{ $now.setZone('Europe/Brussels').toFormat('yyyy-MM-dd HH:mm') }}"
+            },
+            {
+              "column": "Type",
+              "fieldValue": "={{ $json.output.type_document }}"
+            },
+            {
+              "column": "Numéro",
+              "fieldValue": "={{ $json.output.numero }}"
+            },
+            {
+              "column": "Date",
+              "fieldValue": "={{ $json.output.date }}"
+            },
+            {
+              "column": "Échéance",
+              "fieldValue": "={{ $json.output.date_echeance }}"
+            },
+            {
+              "column": "Validité",
+              "fieldValue": "={{ $json.output.date_validite }}"
+            },
+            {
+              "column": "Émetteur",
+              "fieldValue": "={{ $json.output.emetteur.nom }}"
+            },
+            {
+              "column": "TVA émetteur",
+              "fieldValue": "={{ $json.output.emetteur.numero_tva }}"
+            },
+            {
+              "column": "Client",
+              "fieldValue": "={{ $json.output.client.nom }}"
+            },
+            {
+              "column": "TVA client",
+              "fieldValue": "={{ $json.output.client.numero_tva }}"
+            },
+            {
+              "column": "Total HTVA",
+              "fieldValue": "={{ $json.output.total_htva }}"
+            },
+            {
+              "column": "TVA",
+              "fieldValue": "={{ $json.output.montant_tva }}"
+            },
+            {
+              "column": "Total TVAC",
+              "fieldValue": "={{ $json.output.total_tvac }}"
+            },
+            {
+              "column": "Nb lignes",
+              "fieldValue": "={{ $json.output.lignes.length }}"
+            },
+            {
+              "column": "Fichier",
+              "fieldValue": "={{ $('Webhook').item.binary.Document.fileName }}"
+            },
+            {
+              "column": "Lignes",
+              "fieldValue": "={{ $json.output.lignes.map(l => l.quantite + ' x ' + l.designation + ' à ' + l.prix_unitaire_htva + ' € (TVA ' + l.taux_tva + ' %)').join(' / ') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "credentials": {
+        "microsoftExcelOAuth2Api": {
+          "name": "Microsoft Excel account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Extract from File": {
+      "main": [
+        [
+          {
+            "node": "Texte trouvé ?",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erreur lecture PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Basic LLM Chain": {
+      "main": [
+        [
+          {
+            "node": "Append row in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Ajouter dans Excel",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Erreur IA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "vérifier la demande",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "vérifier la demande": {
+      "main": [
+        [
+          {
+            "node": "Demande valide?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Demande valide?": {
+      "main": [
+        [
+          {
+            "node": "Extract from File",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Refuser la demande",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Texte trouvé ?": {
+      "main": [
+        [
+          {
+            "node": "Basic LLM Chain",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "PDF sans texte",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "meta": {
+    "note": "Export sans aucune clé. Remplacer ID_DE_VOTRE_CLASSEUR_ONEDRIVE et l'origine CORS, puis choisir vos propres identifiants (credentials) dans chaque bloc."
+  }
+}

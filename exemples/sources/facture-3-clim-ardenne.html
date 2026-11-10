@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Facture FAC-26-0311, Clim'Ardenne Services SRL</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Arial, Helvetica, sans-serif; font-size: 9.5pt; color: #222; }
+  .page { width: 210mm; min-height: 297mm; position: relative; }
+  .bandeau { background: #374151; color: #fff; padding: 10mm 16mm 8mm; display: flex; justify-content: space-between; align-items: flex-end; }
+  .bandeau .nom { font-size: 17pt; font-weight: bold; }
+  .bandeau .metier { font-size: 9pt; color: #d1d5db; margin-top: 1mm; }
+  .bandeau .num { text-align: right; font-size: 13pt; font-weight: bold; }
+  .contenu { padding: 8mm 16mm 0; }
+  .grille { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6mm; margin-bottom: 8mm; }
+  .case { border: 1px solid #d1d5db; padding: 3mm 4mm; line-height: 1.5; }
+  .case h3 { margin: 0 0 1.5mm; font-size: 8pt; text-transform: uppercase; color: #6b7280; }
+  .intervention { background: #f3f4f6; padding: 3mm 4mm; margin-bottom: 6mm; }
+  table.lignes { width: 100%; border-collapse: collapse; }
+  table.lignes th { border-bottom: 2px solid #374151; padding: 2mm; text-align: left; font-size: 8.5pt; text-transform: uppercase; }
+  table.lignes td { padding: 2.5mm 2mm; border-bottom: 1px solid #e5e7eb; }
+  table.lignes .n { text-align: right; white-space: nowrap; }
+  .totaux { margin: 5mm 0 0 auto; width: 75mm; border: 2px solid #374151; border-collapse: collapse; }
+  .totaux td { padding: 2mm 3mm; }
+  .totaux td:last-child { text-align: right; }
+  .totaux .final td { background: #374151; color: #fff; font-weight: bold; font-size: 11pt; }
+  .reglement { margin-top: 10mm; display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; }
+  .reglement div { line-height: 1.6; }
+  footer { position: absolute; bottom: 12mm; left: 16mm; right: 16mm; text-align: center; font-size: 7.5pt; color: #9ca3af; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="bandeau">
+    <div>
+      <div class="nom">Clim'Ardenne Services SRL</div>
+      <div class="metier">Froid commercial · Climatisation · Dépannage 7j/7</div>
+    </div>
+    <div class="num">Facture FAC-26-0311</div>
+  </div>
+
+  <div class="contenu">
+    <div class="grille">
+      <div class="case">
+        <h3>Client</h3>
+        <strong>Restaurant Le Petit Verger SRL</strong><br>
+        Rue des Vergers Hauts 9<br>
+        6600 Bastogne<br>
+        TVA BE 0587.340.939
+      </div>
+      <div class="case">
+        <h3>Prestataire</h3>
+        Zoning de la Hêtraie 22<br>
+        6700 Arlon<br>
+        TVA BE 0751.938.259<br>
+        atelier@climardenne.example
+      </div>
+      <div class="case">
+        <h3>Références</h3>
+        Date d'émission : 28/10/2026<br>
+        Date d'échéance : 27/11/2026<br>
+        N° client : C-0458
+      </div>
+    </div>
+
+    <div class="intervention">
+      <strong>Intervention du 24/10/2026</strong> : entretien de la chambre froide positive et remplacement du ventilateur de condenseur défectueux.
+    </div>
+
+    <table class="lignes">
+      <thead>
+        <tr><th>Désignation</th><th class="n">Qté</th><th class="n">Prix unit.</th><th class="n">TVA</th><th class="n">Montant</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Entretien annuel chambre froide</td><td class="n">1</td><td class="n">285,00</td><td class="n">21 %</td><td class="n">285,00</td></tr>
+        <tr><td>Ventilateur de condenseur (pièce)</td><td class="n">1</td><td class="n">412,80</td><td class="n">21 %</td><td class="n">412,80</td></tr>
+        <tr><td>Main-d'œuvre (h)</td><td class="n">2,5</td><td class="n">62,00</td><td class="n">21 %</td><td class="n">155,00</td></tr>
+        <tr><td>Frais de déplacement</td><td class="n">1</td><td class="n">45,00</td><td class="n">21 %</td><td class="n">45,00</td></tr>
+      </tbody>
+    </table>
+
+    <table class="totaux">
+      <tr><td>Base imposable</td><td>897,80 €</td></tr>
+      <tr><td>TVA 21 %</td><td>188,54 €</td></tr>
+      <tr class="final"><td>Total à payer</td><td>1 086,34 €</td></tr>
+    </table>
+
+    <div class="reglement">
+      <div>
+        <strong>Règlement</strong><br>
+        Virement à 30 jours<br>
+        IBAN : BE31 0019 4273 6511<br>
+        Communication : +++026/1031/10329+++
+      </div>
+      <div>
+        <strong>Conditions</strong><br>
+        Tout retard de paiement entraîne de plein droit un intérêt de retard au taux légal.
+      </div>
+    </div>
+  </div>
+
+  <footer>Document fictif : démo Saisie Zéro. Entreprises, numéros de TVA et coordonnées bancaires inventés.</footer>
+</div>
+</body>
+</html>

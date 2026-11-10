@@ -1,0 +1,62 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "6b1f7c2e-4a51-4d0e-9a8e-2f3b1c9d7a01",
+              "leftValue": "={{ ($json.text || '').trim().length }}",
+              "rightValue": 20,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [0, 0],
+      "id": "3d0c9b7e-8f21-4c3a-b6d5-1e2f4a7c9b10",
+      "name": "Texte trouvé ?"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"erreur\": \"Ce PDF ne contient pas de texte lisible. C'est sans doute un document scanné : la démo lit seulement les PDF créés par un logiciel.\" }",
+        "options": {
+          "responseCode": 422
+        }
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [240, 160],
+      "id": "9a4e2d1f-6c73-4b8e-a0f5-7d3c2b1e6f20",
+      "name": "PDF sans texte"
+    }
+  ],
+  "connections": {
+    "Texte trouvé ?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "PDF sans texte",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Devis D-2026-058, Peintures Delvaux &amp; Fils SRL</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: "Trebuchet MS", Verdana, sans-serif; font-size: 10pt; color: #1e2b22; }
+  .page { width: 210mm; min-height: 297mm; padding: 16mm 18mm 14mm; position: relative; }
+  .entete { display: flex; justify-content: space-between; }
+  .entete .nom { font-size: 18pt; font-weight: bold; color: #2f6b45; }
+  .entete .adresse { line-height: 1.5; margin-top: 2mm; }
+  .cartouche { background: #2f6b45; color: #fff; padding: 5mm 7mm; text-align: right; line-height: 1.7; }
+  .cartouche .mot { font-size: 22pt; font-weight: bold; letter-spacing: 3px; }
+  .client { margin: 10mm 0 6mm; line-height: 1.5; }
+  .client .label { color: #2f6b45; font-weight: bold; }
+  .objet { margin-bottom: 6mm; padding: 3mm 0; border-top: 1px solid #c7d9cd; border-bottom: 1px solid #c7d9cd; }
+  table.lignes { width: 100%; border-collapse: collapse; }
+  table.lignes th { background: #e6f0e9; padding: 2.5mm; text-align: left; color: #2f6b45; }
+  table.lignes td { padding: 2.5mm; border-bottom: 1px solid #e6f0e9; }
+  table.lignes .n { text-align: right; white-space: nowrap; }
+  .totaux { margin: 6mm 0 0 auto; width: 78mm; border-collapse: collapse; }
+  .totaux td { padding: 2mm 3mm; }
+  .totaux td:last-child { text-align: right; }
+  .totaux .final td { border-top: 2px solid #2f6b45; font-weight: bold; font-size: 12pt; color: #2f6b45; }
+  .mentions { margin-top: 10mm; font-size: 9pt; line-height: 1.6; }
+  .accord { margin-top: 12mm; display: flex; justify-content: space-between; }
+  .accord div { width: 75mm; height: 28mm; border: 1px dashed #8fb59c; padding: 3mm; font-size: 9pt; }
+  footer { position: absolute; bottom: 12mm; left: 18mm; right: 18mm; text-align: center; font-size: 7.5pt; color: #8a9a8f; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="entete">
+    <div>
+      <div class="nom">Peintures Delvaux &amp; Fils</div>
+      <div class="adresse">
+        Peintures Delvaux &amp; Fils SRL<br>
+        Rue de la Brosse Fine 31, 6000 Charleroi<br>
+        TVA : BE 0462.881.526<br>
+        devis@delvaux-peintures.example
+      </div>
+    </div>
+    <div class="cartouche">
+      <div class="mot">DEVIS</div>
+      Devis n° D-2026-058<br>
+      Date : 12/10/2026<br>
+      Valable jusqu'au : 11/11/2026
+    </div>
+  </div>
+
+  <div class="client">
+    <span class="label">Client :</span><br>
+    M. Julien Dubois<br>
+    Rue des Peupliers Clairs 18<br>
+    6041 Gosselies
+  </div>
+
+  <div class="objet"><strong>Objet :</strong> peinture du séjour et du hall d'entrée, habitation privée de plus de 10 ans.</div>
+
+  <table class="lignes">
+    <thead>
+      <tr><th>Désignation</th><th class="n">Quantité</th><th class="n">Prix unitaire</th><th class="n">TVA</th><th class="n">Total HTVA</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Préparation murs et plafonds (ponçage, rebouchage)</td><td class="n">85 m²</td><td class="n">6,50 €</td><td class="n">6 %</td><td class="n">552,50 €</td></tr>
+      <tr><td>Peinture murs, 2 couches</td><td class="n">85 m²</td><td class="n">12,00 €</td><td class="n">6 %</td><td class="n">1 020,00 €</td></tr>
+      <tr><td>Peinture plafonds</td><td class="n">32 m²</td><td class="n">14,50 €</td><td class="n">6 %</td><td class="n">464,00 €</td></tr>
+      <tr><td>Fournitures (peinture, bâches, protections)</td><td class="n">1</td><td class="n">380,00 €</td><td class="n">6 %</td><td class="n">380,00 €</td></tr>
+    </tbody>
+  </table>
+
+  <table class="totaux">
+    <tr><td>Total hors TVA</td><td>2 416,50 €</td></tr>
+    <tr><td>TVA 6 %</td><td>144,99 €</td></tr>
+    <tr class="final"><td>Total TVA comprise</td><td>2 561,49 €</td></tr>
+  </table>
+
+  <div class="mentions">
+    Taux de TVA réduit de 6 % applicable aux travaux de rénovation d'une habitation privée de plus de 10 ans, sous réserve de l'attestation signée par le client.<br>
+    Début des travaux possible dans les 3 semaines suivant l'acceptation du devis. Durée estimée : 5 jours ouvrables.
+  </div>
+
+  <div class="accord">
+    <div>Pour Peintures Delvaux &amp; Fils SRL</div>
+    <div>Bon pour accord : date et signature du client</div>
+  </div>
+
+  <footer>Document fictif : démo Saisie Zéro. Entreprises, personnes et numéros de TVA inventés.</footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,11 @@
+# Clés secrètes
+.env
+.env.*
+
+# Dépendances et fichiers système
+node_modules/
+.DS_Store
+Thumbs.db
+
+# Modèles sans secret
+!deploiement/oracle/.env.example

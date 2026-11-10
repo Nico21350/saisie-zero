@@ -1,0 +1,93 @@
+# Saisie Zéro : n8n en ligne sur le serveur Oracle Cloud Always Free.
+# Trois conteneurs :
+#   - postgres : la base de données de n8n (workflows, identifiants chiffrés, historique)
+#   - n8n      : l'automatisation elle-même, accessible seulement depuis les autres conteneurs
+#   - caddy    : reçoit les visiteurs sur les ports 80 et 443, obtient le certificat HTTPS
+#                (Let's Encrypt) et transmet les demandes à n8n
+# Les secrets (mot de passe Postgres, clé de chiffrement n8n) sont dans le fichier .env
+# du serveur, jamais dans ce fichier. Modèle : .env.example
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: n8n
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: n8n
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U n8n -d n8n"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:2.35.7
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: n8n
+      DB_POSTGRESDB_USER: n8n
+      DB_POSTGRESDB_PASSWORD: ${POSTGRES_PASSWORD}
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY}
+      N8N_HOST: ${DOMAINE}
+      N8N_PROTOCOL: https
+      N8N_PORT: 5678
+      WEBHOOK_URL: https://${DOMAINE}/
+      N8N_PROXY_HOPS: 1
+      GENERIC_TIMEZONE: Europe/Brussels
+      TZ: Europe/Brussels
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_PERSONALIZATION_ENABLED: "false"
+      EXECUTIONS_DATA_PRUNE: "true"
+      EXECUTIONS_DATA_MAX_AGE: 336
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - n8n
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAINE: ${DOMAINE}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+
+  # Parade contre la récupération des serveurs gratuits inactifs : Oracle reprend un
+  # serveur Always Free si processeur, réseau ET mémoire restent sous 20 % pendant 7 jours.
+  # Ce conteneur réserve 3 Go (environ 25 % des 12 Go) et dort : presque aucun processeur.
+  # Il touche chaque page de 4 Ko pour que la mémoire soit réellement occupée.
+  maintien-memoire:
+    image: python:3.13-alpine
+    restart: unless-stopped
+    mem_limit: 3500m
+    command:
+      - python
+      - -c
+      - |
+        import time
+        b = bytearray(3 * 1024**3)
+        for i in range(0, len(b), 4096):
+            b[i] = 1
+        print("3 Go réservés", flush=True)
+        while True:
+            time.sleep(3600)
+
+volumes:
+  postgres_data:
+  n8n_data:
+  caddy_data:
+  caddy_config:

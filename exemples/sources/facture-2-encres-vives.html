@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<title>Facture 2026/0892, Les Encres Vives SRL</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Georgia, "Times New Roman", serif; font-size: 10.5pt; color: #2b2118; }
+  .page { width: 210mm; min-height: 297mm; padding: 20mm 20mm 14mm; position: relative; }
+  .enseigne { text-align: center; border-bottom: 1px solid #2b2118; padding-bottom: 5mm; }
+  .enseigne .nom { font-size: 22pt; font-style: italic; }
+  .enseigne .sous { font-size: 9pt; letter-spacing: 3px; text-transform: uppercase; margin-top: 1mm; }
+  .enseigne .coord { font-size: 9pt; margin-top: 3mm; color: #5c4d3c; }
+  .bloc { display: flex; justify-content: space-between; margin: 10mm 0 8mm; }
+  .bloc .infos td { padding: 0.8mm 4mm 0.8mm 0; }
+  .bloc .infos td:first-child { font-variant: small-caps; color: #5c4d3c; }
+  .destinataire { width: 80mm; border: 1px solid #2b2118; padding: 4mm 5mm; line-height: 1.5; }
+  .destinataire em { display: block; font-size: 9pt; color: #5c4d3c; margin-bottom: 1mm; }
+  h1 { font-size: 15pt; font-weight: normal; margin: 0 0 3mm; }
+  table.lignes { width: 100%; border-collapse: collapse; }
+  table.lignes th { border-top: 1.5px solid #2b2118; border-bottom: 1px solid #2b2118; padding: 2mm; text-align: left; font-variant: small-caps; font-weight: normal; }
+  table.lignes td { padding: 2mm; border-bottom: 1px dotted #b8a99a; }
+  table.lignes .n { text-align: right; white-space: nowrap; }
+  .bas { display: flex; justify-content: space-between; margin-top: 8mm; gap: 10mm; }
+  table.recap { border-collapse: collapse; font-size: 9.5pt; }
+  table.recap caption { text-align: left; font-variant: small-caps; margin-bottom: 1mm; }
+  table.recap th, table.recap td { border: 1px solid #b8a99a; padding: 1.5mm 3mm; }
+  table.recap td { text-align: right; }
+  table.totaux { border-collapse: collapse; min-width: 70mm; }
+  table.totaux td { padding: 1.5mm 2mm; }
+  table.totaux td:last-child { text-align: right; }
+  table.totaux .net td { border-top: 1.5px solid #2b2118; font-weight: bold; font-size: 12pt; padding-top: 2.5mm; }
+  .conditions { margin-top: 12mm; font-size: 9.5pt; line-height: 1.6; }
+  footer { position: absolute; bottom: 12mm; left: 20mm; right: 20mm; text-align: center; font-size: 7.5pt; color: #8c7d6e; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="enseigne">
+    <div class="nom">Les Encres Vives</div>
+    <div class="sous">Librairie · Papeterie · Fournitures de bureau</div>
+    <div class="coord">Les Encres Vives SRL, Chaussée de Wavre 212, 1050 Bruxelles. N° TVA BE 0834.567.116. E-mail : contact@encresvives.example</div>
+  </div>
+
+  <div class="bloc">
+    <div>
+      <h1>Facture</h1>
+      <table class="infos">
+        <tr><td>N° de facture</td><td>2026/0892</td></tr>
+        <tr><td>Date</td><td>22 octobre 2026</td></tr>
+        <tr><td>À payer avant le</td><td>5 novembre 2026</td></tr>
+        <tr><td>Votre référence</td><td>Commande du 20/10</td></tr>
+      </table>
+    </div>
+    <div class="destinataire">
+      <em>Destinataire</em>
+      Atelier d'architecture Moreau &amp; Lens SRL<br>
+      Rue du Bailli Ancien 47<br>
+      1050 Ixelles<br>
+      N° TVA BE 0794.532.642
+    </div>
+  </div>
+
+  <table class="lignes">
+    <thead>
+      <tr><th>Réf.</th><th>Article</th><th class="n">Quantité</th><th class="n">P.U. HT</th><th class="n">Taux TVA</th><th class="n">Montant HT</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>LIV-4471</td><td>Code civil annoté 2026</td><td class="n">2</td><td class="n">89,00</td><td class="n">6 %</td><td class="n">178,00</td></tr>
+      <tr><td>LIV-3902</td><td>Ouvrage « Droit de la construction »</td><td class="n">1</td><td class="n">64,50</td><td class="n">6 %</td><td class="n">64,50</td></tr>
+      <tr><td>PAP-0105</td><td>Ramette papier A4 500 f.</td><td class="n">20</td><td class="n">5,40</td><td class="n">21 %</td><td class="n">108,00</td></tr>
+      <tr><td>ENC-2218</td><td>Cartouche d'encre</td><td class="n">4</td><td class="n">38,90</td><td class="n">21 %</td><td class="n">155,60</td></tr>
+      <tr><td>CLA-0310</td><td>Classeur à levier</td><td class="n">15</td><td class="n">3,20</td><td class="n">21 %</td><td class="n">48,00</td></tr>
+    </tbody>
+  </table>
+
+  <div class="bas">
+    <table class="recap">
+      <caption>Récapitulatif TVA</caption>
+      <tr><th>Taux</th><th>Base HT</th><th>TVA</th></tr>
+      <tr><td>6 %</td><td>242,50</td><td>14,55</td></tr>
+      <tr><td>21 %</td><td>311,60</td><td>65,44</td></tr>
+    </table>
+    <table class="totaux">
+      <tr><td>Total hors TVA</td><td>554,10 €</td></tr>
+      <tr><td>Total TVA</td><td>79,99 €</td></tr>
+      <tr class="net"><td>Net à payer</td><td>634,09 €</td></tr>
+    </table>
+  </div>
+
+  <div class="conditions">
+    Paiement à 15 jours par virement sur le compte BE92 3631 8752 4076.<br>
+    Communication structurée : +++026/1089/20225+++<br>
+    Montants exprimés en euros.
+  </div>
+
+  <footer>Document fictif : démo Saisie Zéro. Entreprises, numéros de TVA et coordonnées bancaires inventés.</footer>
+</div>
+</body>
+</html>

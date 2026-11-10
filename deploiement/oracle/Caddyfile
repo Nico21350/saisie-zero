@@ -1,0 +1,6 @@
+# Caddy obtient et renouvelle seul le certificat HTTPS pour le domaine,
+# puis transmet toutes les demandes à n8n (port 5678, réseau interne Docker).
+{$DOMAINE} {
+	encode gzip
+	reverse_proxy n8n:5678
+}
