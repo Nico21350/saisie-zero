@@ -2,12 +2,12 @@
   "name": "Saisie Zéro",
   "nodes": [
     {
-      "name": "Extract from File",
+      "name": "Lire le texte du PDF",
       "type": "n8n-nodes-base.extractFromFile",
       "typeVersion": 1.1,
       "position": [
-        -1440,
-        -160
+        -3088,
+        816
       ],
       "parameters": {
         "operation": "pdf",
@@ -17,12 +17,12 @@
       "onError": "continueErrorOutput"
     },
     {
-      "name": "Basic LLM Chain",
+      "name": "Extraire avec Gemini",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1.9,
       "position": [
-        -960,
-        -176
+        -2608,
+        800
       ],
       "parameters": {
         "promptType": "define",
@@ -36,14 +36,15 @@
       "onError": "continueErrorOutput"
     },
     {
-      "name": "Google Gemini Chat Model",
+      "name": "Gemini principal",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.1,
       "position": [
-        -992,
-        160
+        -2640,
+        1136
       ],
       "parameters": {
+        "modelName": "models/gemini-3-flash-preview",
         "options": {
           "temperature": 0
         }
@@ -55,12 +56,12 @@
       }
     },
     {
-      "name": "Structured Output Parser",
+      "name": "Format JSON attendu",
       "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
       "typeVersion": 1.3,
       "position": [
-        -656,
-        160
+        -2304,
+        1136
       ],
       "parameters": {
         "schemaType": "manual",
@@ -68,197 +69,12 @@
       }
     },
     {
-      "name": "Append row in sheet",
-      "type": "n8n-nodes-base.googleSheets",
-      "typeVersion": 4.7,
-      "position": [
-        -448,
-        -16
-      ],
-      "parameters": {
-        "authentication": "serviceAccount",
-        "operation": "append",
-        "documentId": {
-          "__rl": true,
-          "mode": "id",
-          "value": "ID_DE_VOTRE_GOOGLE_SHEETS"
-        },
-        "sheetName": {
-          "__rl": true,
-          "value": "gid=0",
-          "mode": "list",
-          "cachedResultName": "Feuille 1"
-        },
-        "columns": {
-          "mappingMode": "defineBelow",
-          "value": {
-            "Traité le": "={{ $now.setZone('Europe/Brussels').toFormat('yyyy-MM-dd HH:mm') }}",
-            "Fichier": "={{ $('Webhook').item.binary.Document.fileName }}",
-            "Type": "={{ $json.output.type_document }}",
-            "Émetteur": "={{ $json.output.emetteur.nom }}",
-            "TVA émetteur": "={{ $json.output.emetteur.numero_tva }}",
-            "Client": "={{ $json.output.client.nom }}",
-            "TVA client": "={{ $json.output.client.numero_tva }}",
-            "Numéro": "={{ $json.output.numero }}",
-            "Date": "={{ $json.output.date }}",
-            "Échéance": "={{ $json.output.date_echeance }}",
-            "Validité": "={{ $json.output.date_validite }}",
-            "Nb lignes": "={{ $json.output.lignes.length }}",
-            "Lignes": "={{ $json.output.lignes.map(l => l.quantite + ' x ' + l.designation + ' à ' + l.prix_unitaire_htva + ' € (TVA ' + l.taux_tva + ' %)').join(' / ') }}",
-            "Total HTVA": "={{ $json.output.total_htva }}",
-            "TVA": "={{ $json.output.montant_tva }}",
-            "Total TVAC": "={{ $json.output.total_tvac }}"
-          },
-          "matchingColumns": [],
-          "schema": [
-            {
-              "displayName": "Traité le",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "Fichier",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "Type",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "Émetteur",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "TVA émetteur",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "Client",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "TVA client",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "Numéro",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "Date",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "Échéance",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "Validité",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "Nb lignes",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "Lignes",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "Total HTVA",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "TVA",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            },
-            {
-              "displayName": "Total TVAC",
-              "required": false,
-              "defaultMatch": false,
-              "display": true,
-              "type": "string",
-              "canBeUsedToMatch": true
-            }
-          ],
-          "attemptToConvertTypes": false,
-          "convertFieldsToString": false
-        },
-        "options": {}
-      },
-      "disabled": true,
-      "credentials": {
-        "googleApi": {
-          "name": "Google Service Account account"
-        }
-      }
-    },
-    {
       "name": "Webhook",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -2032,
-        176
+        -3680,
+        1152
       ],
       "parameters": {
         "httpMethod": "POST",
@@ -270,24 +86,26 @@
       }
     },
     {
-      "name": "Respond to Webhook",
+      "name": "Répondre : ligne ajoutée",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -448,
-        -192
+        -1552,
+        608
       ],
       "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ output: $('Extraire avec Gemini').first().json.output, excel: 'ajoute' }) }}",
         "options": {}
       }
     },
     {
-      "name": "Google Gemini Chat Model1",
+      "name": "Gemini de secours",
       "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
       "typeVersion": 1.1,
       "position": [
-        -816,
-        160
+        -2464,
+        1136
       ],
       "parameters": {
         "modelName": "models/gemini-3.8-flash",
@@ -306,8 +124,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -1440,
-        16
+        -3088,
+        992
       ],
       "parameters": {
         "respondWith": "json",
@@ -322,8 +140,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -448,
-        176
+        -2048,
+        1180
       ],
       "parameters": {
         "respondWith": "json",
@@ -334,24 +152,24 @@
       }
     },
     {
-      "name": "vérifier la demande",
+      "name": "Vérifier la demande",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1840,
-        176
+        -3488,
+        1152
       ],
       "parameters": {
-        "jsCode": "// Code du bloc n8n « Vérifier la demande » (Code in JavaScript, Run Once for All Items),\n// placé entre le Webhook et Extract from File. Étape 6, partie 3.\n\n// Vérifie la demande avant l'analyse : fichier présent, vrai PDF, taille,\n// et nombre d'analyses (pour protéger le quota gratuit de Gemini).\nconst LIMITE_PAR_HEURE = 10; // par visiteur\nconst LIMITE_PAR_JOUR = 100; // pour toute la démo\nconst TAILLE_MAX = 5 * 1024 * 1024; // 5 Mo\n\nconst item = $input.first();\nconst fichier = item.binary?.Document;\n\nfunction refuser(message) {\n  return [{ json: { valide: false, erreur: message } }];\n}\n\nif (!fichier) return refuser(\"Aucun fichier reçu. Choisissez un PDF.\");\n\nconst contenu = await this.helpers.getBinaryDataBuffer(0, 'Document');\nif (contenu.length > TAILLE_MAX) return refuser(\"Ce fichier dépasse 5 Mo.\");\n// Tous les vrais PDF commencent par les caractères \"%PDF\"\nif (contenu.subarray(0, 4).toString() !== '%PDF') return refuser(\"Ce fichier n'est pas un vrai PDF.\");\n\n// Compteurs gardés par n8n d'une exécution à l'autre (seulement quand le workflow est publié).\n// Ils repartent à zéro chaque heure et chaque jour.\nconst memoire = $getWorkflowStaticData('global');\nconst heure = Math.floor(Date.now() / 3600000);\nconst jour = new Date().toISOString().slice(0, 10);\nconst visiteur = (item.json.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'local';\n\nif (memoire.heure !== heure) { memoire.heure = heure; memoire.parVisiteur = {}; }\nif (memoire.jour !== jour) { memoire.jour = jour; memoire.total = 0; }\n\nconst dejaFaites = memoire.parVisiteur[visiteur] || 0;\nif (dejaFaites >= LIMITE_PAR_HEURE) return refuser(`Vous avez atteint la limite de ${LIMITE_PAR_HEURE} analyses par heure. Réessayez plus tard.`);\nif (memoire.total >= LIMITE_PAR_JOUR) return refuser(\"La démo a atteint sa limite d'analyses pour aujourd'hui. Revenez demain.\");\n\nmemoire.parVisiteur[visiteur] = dejaFaites + 1;\nmemoire.total += 1;\n\nreturn [{ json: { ...item.json, valide: true }, binary: item.binary }];\n"
+        "jsCode": "// Code du bloc n8n « Vérifier la demande » (Code in JavaScript, Run Once for All Items),\n// placé entre le Webhook et la lecture du PDF.\n\n// Vérifie la demande avant l'analyse : fichier présent, vrai PDF, taille,\n// et nombre d'analyses (pour protéger le quota gratuit de Gemini).\n// En cas de refus, le code HTTP suit la norme : 400 (rien reçu), 413 (trop lourd),\n// 415 (pas un PDF), 429 (limite atteinte).\nconst LIMITE_PAR_HEURE = 10; // par visiteur, remise à zéro au début de chaque heure\nconst LIMITE_PAR_JOUR = 100; // pour toute la démo\nconst TAILLE_MAX = 5 * 1024 * 1024; // 5 Mo\n\nconst item = $input.first();\nconst fichier = item.binary?.Document;\n\nfunction refuser(message, code) {\n  return [{ json: { valide: false, erreur: message, code } }];\n}\n\nif (!fichier) return refuser(\"Aucun fichier reçu. Choisissez un PDF.\", 400);\n\nconst contenu = await this.helpers.getBinaryDataBuffer(0, 'Document');\nif (contenu.length > TAILLE_MAX) return refuser(\"Ce fichier dépasse 5 Mo.\", 413);\n// Tous les vrais PDF commencent par les caractères \"%PDF\"\nif (contenu.subarray(0, 4).toString() !== '%PDF') return refuser(\"Ce fichier n'est pas un vrai PDF.\", 415);\n\n// Compteurs gardés par n8n d'une exécution à l'autre (seulement quand le workflow est publié).\n// Limite simple pour une démo : deux demandes exactement simultanées peuvent passer ensemble.\nconst memoire = $getWorkflowStaticData('global');\nconst heure = Math.floor(Date.now() / 3600000);\nconst jour = new Date().toISOString().slice(0, 10);\nconst visiteur = (item.json.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'local';\n\nif (memoire.heure !== heure) { memoire.heure = heure; memoire.parVisiteur = {}; }\nif (memoire.jour !== jour) { memoire.jour = jour; memoire.total = 0; }\n\nconst dejaFaites = memoire.parVisiteur[visiteur] || 0;\nif (dejaFaites >= LIMITE_PAR_HEURE) return refuser(`Vous avez atteint la limite de ${LIMITE_PAR_HEURE} analyses par heure. Réessayez plus tard.`, 429);\nif (memoire.total >= LIMITE_PAR_JOUR) return refuser(\"La démo a atteint sa limite d'analyses pour aujourd'hui. Revenez demain.\", 429);\n\nmemoire.parVisiteur[visiteur] = dejaFaites + 1;\nmemoire.total += 1;\n\nreturn [{ json: { ...item.json, valide: true }, binary: item.binary }];\n"
       }
     },
     {
-      "name": "Demande valide?",
+      "name": "Demande valide ?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.3,
       "position": [
-        -1632,
-        176
+        -3280,
+        1152
       ],
       "parameters": {
         "conditions": {
@@ -382,14 +200,14 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.5,
       "position": [
-        -1280,
-        336
+        -2928,
+        1312
       ],
       "parameters": {
         "respondWith": "json",
         "responseBody": "={{ JSON.stringify({ erreur: $json.erreur }) }}\n",
         "options": {
-          "responseCode": 400
+          "responseCode": "={{ $json.code || 400 }}"
         }
       }
     },
@@ -398,8 +216,8 @@
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
       "position": [
-        -1200,
-        -176
+        -2848,
+        800
       ],
       "parameters": {
         "conditions": {
@@ -429,8 +247,8 @@
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
       "position": [
-        -1200,
-        16
+        -2848,
+        992
       ],
       "parameters": {
         "respondWith": "json",
@@ -445,8 +263,8 @@
       "type": "n8n-nodes-base.microsoftExcel",
       "typeVersion": 2.2,
       "position": [
-        -976,
-        464
+        -1808,
+        720
       ],
       "parameters": {
         "resource": "table",
@@ -528,25 +346,98 @@
             },
             {
               "column": "Fichier",
-              "fieldValue": "={{ $('Webhook').item.binary.Document.fileName }}"
+              "fieldValue": "={{ $json.fichier }}"
             },
             {
               "column": "Lignes",
-              "fieldValue": "={{ $json.output.lignes.map(l => l.quantite + ' x ' + l.designation + ' à ' + l.prix_unitaire_htva + ' € (TVA ' + l.taux_tva + ' %)').join(' / ') }}"
+              "fieldValue": "={{ $json.lignesTexte }}"
             }
           ]
         },
         "options": {}
       },
+      "onError": "continueErrorOutput",
       "credentials": {
         "microsoftExcelOAuth2Api": {
           "name": "Microsoft Excel account"
         }
       }
+    },
+    {
+      "name": "Facture ou devis ?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -2288,
+        800
+      ],
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "leftValue": "={{ ['facture', 'devis'].includes($json.output.type_document) }}",
+              "rightValue": "",
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      }
+    },
+    {
+      "name": "Préparer la ligne Excel",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2048,
+        720
+      ],
+      "parameters": {
+        "jsCode": "// Code du bloc n8n « Préparer la ligne Excel » (Code in JavaScript, Run Once for All Items),\n// placé entre « Facture ou devis ? » et « Ajouter dans Excel ».\n//\n// Le classeur est public : on nettoie tout ce que l'IA a extrait avant de l'y écrire.\n// - Un texte qui commence par = + - ou @ serait lu par Excel comme une formule\n//   (par exemple =HYPERLINK(...) caché dans un PDF piégé) : ces caractères sont retirés.\n// - Les textes sont raccourcis, les dates gardées seulement au format AAAA-MM-JJ,\n//   les montants seulement s'ils sont des nombres.\n// - Le nom du fichier peut contenir des données personnelles : il n'est gardé que pour\n//   les documents d'exemple de la démo.\n\nconst EXEMPLES = [\n  'facture-1-pixelvent.pdf',\n  'facture-2-encres-vives.pdf',\n  'facture-3-clim-ardenne.pdf',\n  'devis-1-delvaux.pdf',\n  'devis-2-saveurs-de-meuse.pdf',\n];\n\nfunction texte(valeur, max = 120) {\n  if (typeof valeur !== 'string') return null;\n  let t = valeur.replace(/[\\u0000-\\u001f\\u007f]/g, ' ').replace(/\\s+/g, ' ').trim();\n  while (/^[=+\\-@]/.test(t)) t = t.slice(1).trim();\n  return t ? t.slice(0, max) : null;\n}\nconst nombre = (v) => (typeof v === 'number' && Number.isFinite(v) ? v : null);\nconst date = (v) => (typeof v === 'string' && /^\\d{4}-\\d{2}-\\d{2}$/.test(v) ? v : null);\nconst partie = (p) => ({ nom: texte(p?.nom, 100), numero_tva: texte(p?.numero_tva, 30) });\n\nconst o = $input.first().json.output || {};\nconst lignes = (Array.isArray(o.lignes) ? o.lignes : []).slice(0, 50).map((l) => ({\n  designation: texte(l?.designation, 100),\n  quantite: nombre(l?.quantite),\n  prix_unitaire_htva: nombre(l?.prix_unitaire_htva),\n  taux_tva: nombre(l?.taux_tva),\n}));\n\nconst nomFichier = $('Webhook').first().binary?.Document?.fileName || '';\n\nreturn [{\n  json: {\n    output: {\n      type_document: o.type_document,\n      emetteur: partie(o.emetteur),\n      client: partie(o.client),\n      numero: texte(o.numero, 40),\n      date: date(o.date),\n      date_echeance: date(o.date_echeance),\n      date_validite: date(o.date_validite),\n      lignes,\n      total_htva: nombre(o.total_htva),\n      montant_tva: nombre(o.montant_tva),\n      total_tvac: nombre(o.total_tvac),\n    },\n    fichier: EXEMPLES.includes(nomFichier) ? nomFichier : 'Document déposé',\n    lignesTexte: texte(\n      lignes.map((l) => `${l.quantite ?? '?'} x ${l.designation ?? '?'} à ${l.prix_unitaire_htva ?? '?'} € (TVA ${l.taux_tva ?? '?'} %)`).join(' / '),\n      1000,\n    ),\n  },\n}];\n"
+      }
+    },
+    {
+      "name": "Répondre : Excel indisponible",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -1552,
+        816
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ output: $('Extraire avec Gemini').first().json.output, excel: 'echec' }) }}",
+        "options": {}
+      }
+    },
+    {
+      "name": "Répondre : document non reconnu",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -2048,
+        960
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ output: $('Extraire avec Gemini').first().json.output, excel: 'ignore' }) }}",
+        "options": {}
+      }
     }
   ],
   "connections": {
-    "Extract from File": {
+    "Lire le texte du PDF": {
       "main": [
         [
           {
@@ -564,21 +455,11 @@
         ]
       ]
     },
-    "Basic LLM Chain": {
+    "Extraire avec Gemini": {
       "main": [
         [
           {
-            "node": "Append row in sheet",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Respond to Webhook",
-            "type": "main",
-            "index": 0
-          },
-          {
-            "node": "Ajouter dans Excel",
+            "node": "Facture ou devis ?",
             "type": "main",
             "index": 0
           }
@@ -592,22 +473,22 @@
         ]
       ]
     },
-    "Google Gemini Chat Model": {
+    "Gemini principal": {
       "ai_languageModel": [
         [
           {
-            "node": "Basic LLM Chain",
+            "node": "Extraire avec Gemini",
             "type": "ai_languageModel",
             "index": 0
           }
         ]
       ]
     },
-    "Structured Output Parser": {
+    "Format JSON attendu": {
       "ai_outputParser": [
         [
           {
-            "node": "Basic LLM Chain",
+            "node": "Extraire avec Gemini",
             "type": "ai_outputParser",
             "index": 0
           }
@@ -618,40 +499,40 @@
       "main": [
         [
           {
-            "node": "vérifier la demande",
+            "node": "Vérifier la demande",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Google Gemini Chat Model1": {
+    "Gemini de secours": {
       "ai_languageModel": [
         [
           {
-            "node": "Basic LLM Chain",
+            "node": "Extraire avec Gemini",
             "type": "ai_languageModel",
             "index": 1
           }
         ]
       ]
     },
-    "vérifier la demande": {
+    "Vérifier la demande": {
       "main": [
         [
           {
-            "node": "Demande valide?",
+            "node": "Demande valide ?",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Demande valide?": {
+    "Demande valide ?": {
       "main": [
         [
           {
-            "node": "Extract from File",
+            "node": "Lire le texte du PDF",
             "type": "main",
             "index": 0
           }
@@ -669,7 +550,7 @@
       "main": [
         [
           {
-            "node": "Basic LLM Chain",
+            "node": "Extraire avec Gemini",
             "type": "main",
             "index": 0
           }
@@ -677,6 +558,53 @@
         [
           {
             "node": "PDF sans texte",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Facture ou devis ?": {
+      "main": [
+        [
+          {
+            "node": "Préparer la ligne Excel",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Répondre : document non reconnu",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Préparer la ligne Excel": {
+      "main": [
+        [
+          {
+            "node": "Ajouter dans Excel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ajouter dans Excel": {
+      "main": [
+        [
+          {
+            "node": "Répondre : ligne ajoutée",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Répondre : Excel indisponible",
             "type": "main",
             "index": 0
           }
