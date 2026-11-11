@@ -37,7 +37,7 @@ flowchart LR
 
 | Part | Tool | Notes |
 |---|---|---|
-| Web page | HTML, CSS, JavaScript (no framework) | Hosted on Vercel. Light and dark themes, mobile layout, keyboard access, reduced-motion support. |
+| Web page | HTML, CSS, JavaScript (no framework) | Hosted on Vercel. Dark theme, mobile layout, keyboard access, reduced-motion support. |
 | Automation | n8n 2.x (Community edition) | Docker Compose on an Oracle Cloud "Always Free" ARM server, with PostgreSQL and Caddy (automatic HTTPS). Only the webhook address is open to the internet; the n8n editor is reached through an SSH tunnel. |
 | AI | Google Gemini (free tier) | Main model `gemini-3-flash-preview`, fallback `gemini-3.8-flash` when the main one returns an error, automatic retries, temperature 0. |
 | Spreadsheet | Microsoft Excel 365 on OneDrive | Connected through a **Microsoft Entra ID app registration** (Azure), delegated permissions `Files.ReadWrite` and `offline_access` only. |
@@ -113,7 +113,7 @@ Fields compared: type, supplier and client (name and VAT number), number, dates,
 
 Saisie Zéro est une démo publique d'automatisation de documents pour PME. Un visiteur dépose une facture ou un devis en PDF. L'IA reconnaît le type de document, en extrait les informations utiles, affiche le résultat à l'écran et ajoute une ligne dans un classeur Excel public, consultable en lecture seule. Aucune saisie à la main.
 
-![Page d'accueil, thème clair](docs/accueil-clair.png)
+![Page d'accueil, thème sombre](docs/accueil-sombre.png)
 
 ### Ce que fait la démo
 
@@ -127,7 +127,7 @@ Saisie Zéro est une démo publique d'automatisation de documents pour PME. Un v
 
 | Partie | Outil | Détails |
 |---|---|---|
-| Page web | HTML, CSS, JavaScript sans bibliothèque | Hébergée sur Vercel. Thèmes clair et sombre, version téléphone, accès au clavier, respect du réglage « moins d'animations ». |
+| Page web | HTML, CSS, JavaScript sans bibliothèque | Hébergée sur Vercel. Thème sombre, version téléphone, accès au clavier, respect du réglage « moins d'animations ». |
 | Automatisation | n8n 2.x (édition Community) | Docker Compose sur un serveur ARM Oracle Cloud « Always Free », avec PostgreSQL et Caddy (HTTPS automatique). Seule l'adresse du webhook est ouverte sur Internet ; l'éditeur n8n s'ouvre par un tunnel SSH. |
 | IA | Google Gemini (version gratuite) | Modèle principal `gemini-3-flash-preview`, secours `gemini-3.8-flash` quand le principal renvoie une erreur, nouvelles tentatives automatiques, température 0. |
 | Tableur | Microsoft Excel 365 sur OneDrive | Relié par une **inscription d'application Microsoft Entra ID** (Azure), avec seulement les autorisations déléguées `Files.ReadWrite` et `offline_access`. |
