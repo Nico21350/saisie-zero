@@ -1,43 +1,21 @@
 :root {
-  --fond: #f5f6fb;
-  --fond-halo-1: rgba(99, 102, 241, 0.18);
-  --fond-halo-2: rgba(20, 184, 166, 0.16);
-  --carte: rgba(255, 255, 255, 0.82);
-  --carte-pleine: #ffffff;
-  --texte: #141827;
-  --discret: #5d6478;
-  --bordure: rgba(20, 24, 39, 0.09);
-  --accent: #5b5bf0;
-  --accent-2: #14b8a6;
-  --accent-doux: rgba(91, 91, 240, 0.08);
-  --erreur: #c0262d;
-  --erreur-doux: rgba(192, 38, 45, 0.08);
-  --succes: #0f8a68;
-  --succes-doux: rgba(15, 138, 104, 0.1);
-  --ombre: 0 1px 2px rgba(20, 24, 39, 0.04), 0 12px 32px -12px rgba(20, 24, 39, 0.14);
-  color-scheme: light;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --fond: #0b0d17;
-    --fond-halo-1: rgba(99, 102, 241, 0.28);
-    --fond-halo-2: rgba(20, 184, 166, 0.18);
-    --carte: rgba(22, 25, 41, 0.78);
-    --carte-pleine: #161929;
-    --texte: #eceef7;
-    --discret: #9aa0b8;
-    --bordure: rgba(255, 255, 255, 0.08);
-    --accent: #8b8cff;
-    --accent-2: #2dd4bf;
-    --accent-doux: rgba(139, 140, 255, 0.1);
-    --erreur: #ff8a8f;
-    --erreur-doux: rgba(255, 138, 143, 0.1);
-    --succes: #4ade9b;
-    --succes-doux: rgba(74, 222, 155, 0.1);
-    --ombre: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px -16px rgba(0, 0, 0, 0.6);
-    color-scheme: dark;
-  }
+  --fond: #0b0d17;
+  --fond-halo-1: rgba(99, 102, 241, 0.28);
+  --fond-halo-2: rgba(20, 184, 166, 0.18);
+  --carte: rgba(22, 25, 41, 0.78);
+  --carte-pleine: #161929;
+  --texte: #eceef7;
+  --discret: #9aa0b8;
+  --bordure: rgba(255, 255, 255, 0.08);
+  --accent: #8b8cff;
+  --accent-2: #2dd4bf;
+  --accent-doux: rgba(139, 140, 255, 0.1);
+  --erreur: #ff8a8f;
+  --erreur-doux: rgba(255, 138, 143, 0.1);
+  --succes: #4ade9b;
+  --succes-doux: rgba(74, 222, 155, 0.1);
+  --ombre: 0 1px 2px rgba(0, 0, 0, 0.3), 0 16px 40px -16px rgba(0, 0, 0, 0.6);
+  color-scheme: dark;
 }
 
 /* Un élément marqué hidden reste caché, même si une autre règle lui donne un display. */
